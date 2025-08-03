@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SKJ Simulator Pro - Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="network_simulation.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">SKJ Simulator Pro</div>
+    <nav class="menu">
+      <button class="tab-btn" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn" data-tab="rooms">Rooms</button>
+      <button class="tab-btn" data-tab="challenges">Challenges</button>
+      <button class="tab-btn" data-tab="leaderboard">Leaderboard</button>
+      <button class="tab-btn" data-tab="profile">Profile</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="dashboard" class="tab active">
+      <h1>Selamat Datang di SKJ Simulator Pro</h1>
+      <p>Platform pembelajaran keamanan jaringan interaktif untuk SMK.</p>
+
+      <div class="stats">
+        <div class="card">
+          <div class="value" id="points">0</div>
+          <div class="label">Total Poin</div>
+        </div>
+        <div class="card">
+          <div class="value" id="challengesDone">0</div>
+          <div class="label">Challenge Selesai</div>
+        </div>
+        <div class="card">
+          <div class="value" id="streak">0</div>
+          <div class="label">Streak Hari</div>
+        </div>
+        <div class="card">
+          <div class="value" id="rank">Pemula</div>
+          <div class="label">Rank</div>
+        </div>
+      </div>
+
+      <h2>Progress Pembelajaran</h2>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+      </div>
+
+      <div class="md-wrap">
+        <h2>Ringkasan Materi</h2>
+        <article id="markdown"></article>
+      </div>
+    </section>
+
+    <section id="rooms" class="tab">
+      <h2>Rooms</h2>
+      <p>Pilih ruang belajar berdasarkan semester dan topik.</p>
+      <div id="roomsList" class="grid"></div>
+    </section>
+
+    <section id="challenges" class="tab">
+      <h2>Challenges</h2>
+      <p>Selesaikan tantangan untuk mendapatkan poin dan sertifikat.</p>
+      <div id="challengeList" class="grid"></div>
+      <div id="challengePlayground" class="playground hidden">
+        <h3 id="challengeTitle"></h3>
+        <div class="challenge-body">
+<div class="sim-panel">
+            <canvas id="simCanvas" width="600" height="320"></canvas>
+            
+            <!-- Network Simulation Container -->
+            <div id="networkSimContainer" class="network-simulation-container hidden">
+              <div id="networkControlsContainer"></div>
+              <div class="network-canvas-container">
+                <canvas id="networkCanvas" width="800" height="500"></canvas>
+              </div>
+              <div id="networkMonitorContainer"></div>
+            </div>
+            <div id="phishGame" class="hidden" style="margin-top:10px;background:#0b1424;border:1px solid #1e2a40;border-radius:8px;padding:10px">
+              <div style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+                <div>
+                  <div><strong>From:</strong> <span id="mailFrom">support@paypa1.com</span></div>
+                  <div><strong>Subject:</strong> <span id="mailSubject">Akun Anda dibatasi</span></div>
+                </div>
+                <div>
+                  <button id="btnMarkPhish" class="warn">Tandai Phishing</button>
+                  <button id="btnOpenLink" class="primary">Buka Link</button>
+                </div>
+              </div>
+              <hr style="border-color:#1e2a40"/>
+              <div id="mailBody" style="white-space:pre-wrap;color:#cfe8ff;font-size:14px">
+Halo pengguna,
+Akun Anda telah dibatasi. Verifikasi identitas Anda melalui tautan berikut:
+http://paypa1-secure.com/verify
+              </div>
+              <div id="phishFeedback" style="margin-top:8px;color:#9bb0cc"></div>
+            </div>
+
+            <div id="caesarGame" class="hidden" style="margin-top:10px;background:#0b1424;border:1px solid #1e2a40;border-radius:8px;padding:10px">
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <label>Plaintext:
+                  <input id="caesarPlain" style="margin-left:6px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:6px" placeholder="contoh: HELLO WORLD">
+                </label>
+                <label>Shift:
+                  <input id="caesarShift" type="number" value="3" min="-25" max="25" style="margin-left:6px;width:70px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:6px">
+                </label>
+                <button id="btnEncryptCaesar" class="primary">Encrypt</button>
+                <button id="btnDecryptCaesar" class="warn">Decrypt</button>
+              </div>
+              <div style="margin-top:8px">
+                <div><strong>Ciphertext:</strong> <span id="caesarCipher" style="color:#cfe8ff"></span></div>
+              </div>
+            <div id="caesarFeedback" style="margin-top:8px;color:#9bb0cc"></div>
+            </div>
+
+            <div id="firewallGame" class="hidden" style="margin-top:10px;background:#0b1424;border:1px solid #1e2a40;border-radius:8px;padding:10px">
+              <div style="display:flex;gap:16px;flex-wrap:wrap">
+                <div style="min-width:260px">
+                  <h4 style="margin:0 0 6px">Rule Builder</h4>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                    <label>Aksi:
+                      <select id="fwAction" style="margin-left:6px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                        <option value="deny">Deny</option>
+                        <option value="allow">Allow</option>
+                      </select>
+                    </label>
+                    <label>Proto:
+                      <select id="fwProto" style="margin-left:6px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                        <option value="TCP">TCP</option>
+                        <option value="UDP">UDP</option>
+                      </select>
+                    </label>
+                    <label>Port:
+                      <input id="fwPort" type="number" min="1" max="65535" value="23" style="margin-left:6px;width:80px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                    </label>
+                  </div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px">
+                    <label>Source:
+                      <select id="fwSrcPreset" style="margin-left:6px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                        <option value="any">Any</option>
+                        <option value="10.0.0.0/24">10.0.0.0/24</option>
+                        <option value="192.168.1.0/24">192.168.1.0/24</option>
+                      </select>
+                    </label>
+                    <input id="fwSrc" placeholder="opsional CIDR/ip: Any" style="flex:1;min-width:160px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                  </div>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:6px">
+                    <label>Destination:
+                      <select id="fwDstPreset" style="margin-left:6px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                        <option value="any">Any</option>
+                        <option value="10.0.0.10">Server (10.0.0.10)</option>
+                        <option value="10.0.0.50">DMZ (10.0.0.50)</option>
+                      </select>
+                    </label>
+                    <input id="fwDst" placeholder="opsional ip: Any" style="flex:1;min-width:160px;background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                  </div>
+                  <div style="margin-top:8px">
+                    <button id="btnAddRule" class="primary">Add Rule</button>
+                  </div>
+                </div>
+
+                <div style="min-width:260px;flex:1">
+                  <h4 style="margin:0 0 6px">Rules</h4>
+                  <ul id="fwRuleList" style="list-style:decimal;margin-left:18px"></ul>
+                </div>
+              </div>
+
+              <hr style="border-color:#1e2a40;margin:10px 0"/>
+
+              <div>
+                <h4 style="margin:0 0 6px">Traffic Simulator</h4>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+                  <select id="fwPktPreset" style="background:#0b1424;border:1px solid #1e2a40;border-radius:6px;color:#e8f0ff;padding:4px">
+                    <option value="TCP,80,10.0.0.20,10.0.0.10">HTTP (TCP:80) Client->Server</option>
+                    <option value="TCP,23,10.0.0.20,10.0.0.10">Telnet (TCP:23) Client->Server</option>
+                    <option value="UDP,53,10.0.0.20,10.0.0.50">DNS (UDP:53) Client->DMZ</option>
+                    <option value="TCP,22,10.0.0.20,10.0.0.10">SSH (TCP:22) Client->Server</option>
+                  </select>
+                  <button id="btnEval" class="warn">Evaluate</button>
+                </div>
+                <div id="fwResult" style="margin-top:8px;color:#cfe8ff"></div>
+                <div id="fwFeedback" style="margin-top:6px;color:#9bb0cc"></div>
+              </div>
+            </div>
+          </div>
+          <div class="task-panel">
+            <ol id="taskList"></ol>
+            <button id="btnCompleteTask" class="primary">Tandai Langkah Selesai</button>
+            <button id="btnFinishChallenge" class="success">Selesaikan Challenge</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="leaderboard" class="tab">
+      <h2>Leaderboard</h2>
+      <ol id="leaderboardList"></ol>
+    </section>
+
+    <section id="profile" class="tab">
+      <h2>Profil</h2>
+      <div class="profile-box">
+        <label>Nama:
+          <input id="profileName" placeholder="Isi nama Anda"/>
+        </label>
+        <button id="saveProfile" class="primary">Simpan</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Prototype TryHackMe-like untuk SKJ. Data tersimpan lokal (LocalStorage).</small>
+  </footer>
+
+  <script src="network_simulation.js"></script>
+  <script src="network_controls.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
