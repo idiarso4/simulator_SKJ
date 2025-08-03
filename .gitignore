@@ -54,3 +54,6 @@ local_settings.py
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Kiro directory
+.kiro/
